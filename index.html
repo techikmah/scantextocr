@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ScanText — Find Text in Scanned PDFs</title>
+  <meta name="description" content="Search text inside scanned or image-only PDF pages, right in your browser. OCR runs entirely on your device — nothing is uploaded, no account needed." />
+
+  <meta property="og:title" content="ScanText — Find Text in Scanned PDFs" />
+  <meta property="og:description" content="Search text inside scanned or image-only PDF pages, right in your browser. OCR runs entirely on your device — nothing is uploaded." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./icons/icon128.png" />
+  <meta name="twitter:card" content="summary" />
+
+  <link rel="icon" type="image/png" sizes="48x48" href="./icons/icon48.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="./icons/icon128.png" />
+  <link rel="apple-touch-icon" href="./icons/icon128.png" />
+
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon48.png" width="20" height="20" alt="" />
+      <span>ScanText</span>
+    </div>
+
+    <div class="search" id="searchBar" hidden>
+      <input id="searchInput" type="text" placeholder="Search text on this document…" autocomplete="off" />
+      <span id="matchLabel" class="match-label">0 / 0</span>
+      <button id="prevBtn" class="icon-btn" title="Previous match (Shift+Enter)">&#8593;</button>
+      <button id="nextBtn" class="icon-btn" title="Next match (Enter)">&#8595;</button>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="export-wrap">
+        <button id="exportBtn" class="ghost-btn" hidden>Export ▾</button>
+        <div id="exportMenu" class="export-menu" hidden>
+          <button type="button" data-action="copy">Copy all text</button>
+          <button type="button" data-action="csv">Download as CSV</button>
+          <button type="button" data-action="json">Download as JSON</button>
+        </div>
+      </div>
+      <button id="newFileBtn" class="ghost-btn" hidden>Open another PDF</button>
+      <button id="settingsBtn" class="ghost-btn" title="OCR language settings">Settings</button>
+    </div>
+  </header>
+
+  <main id="statusLine" class="status-line" hidden></main>
+
+  <section id="dropzone" class="dropzone">
+    <div class="dropzone-inner">
+      <div class="scan-icon" aria-hidden="true">
+        <div class="scan-doc"></div>
+        <div class="scan-beam"></div>
+      </div>
+      <h1>Drop a PDF here</h1>
+      <p>Or choose a file from your computer. Pages that are just images of text get OCR'd automatically — everything happens on this device. No account, no limits.</p>
+      <button id="pickBtn" class="primary">Choose a PDF file</button>
+      <input id="fileInput" type="file" accept="application/pdf" hidden />
+    </div>
+  </section>
+
+  <div id="pages" class="pages"></div>
+
+  <div id="settingsPanel" class="account-panel" hidden>
+    <div class="account-panel-inner">
+      <button id="closeSettingsBtn" class="icon-btn account-close" aria-label="Close">&times;</button>
+      <h2>Settings</h2>
+
+      <div class="account-section">
+        <label for="langSearchInput">OCR language(s)</label>
+        <input id="langSearchInput" type="text" placeholder="Search 125 languages…" autocomplete="off" />
+        <div id="langSelected" class="lang-selected"></div>
+        <div id="langOptions" class="lang-options" role="listbox" aria-multiselectable="true"></div>
+        <p class="lang-hint">Pick what's actually in your documents — loading many languages at once slows OCR down and can make it less accurate, so selecting everything isn't the win it sounds like.</p>
+      </div>
+
+      <button id="applySettingsBtn" class="primary apply-settings-btn">Apply settings</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

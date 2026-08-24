@@ -1,0 +1,561 @@
+:root {
+  --ink: #0f1116;
+  --ink-raised: #181b23;
+  --paper: #ededed;
+  --paper-dim: #9a9fac;
+  --amber: #f2a93b;
+  --amber-dim: #7a5a24;
+  --teal: #3ec9b0;
+  --border: #262a34;
+  --hl: rgba(255, 211, 77, 0.55);
+  --hl-active: rgba(255, 107, 74, 0.75);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------- top bar ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  background: var(--ink-raised);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 520px;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px 4px 10px;
+}
+.search[hidden] {
+  display: none;
+}
+
+.search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--paper);
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.match-label {
+  font-variant-numeric: tabular-nums;
+  color: var(--paper-dim);
+  font-size: 12px;
+  min-width: 52px;
+  text-align: center;
+}
+
+.icon-btn, .ghost-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--paper);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 5px 9px;
+  font-size: 13px;
+}
+.icon-btn:hover, .ghost-btn:hover { border-color: var(--teal); color: var(--teal); }
+.icon-btn:disabled { opacity: 0.35; cursor: default; }
+.icon-btn:disabled:hover { border-color: var(--border); color: var(--paper); }
+
+.topbar-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.export-wrap {
+  position: relative;
+}
+
+.export-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  min-width: 170px;
+  background: var(--ink-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.export-menu[hidden] {
+  display: none;
+}
+
+.export-menu button {
+  background: transparent;
+  border: none;
+  color: var(--paper);
+  text-align: left;
+  font-size: 13px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.export-menu button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--teal);
+}
+
+/* ---------- status line ---------- */
+
+.status-line {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--amber);
+  border-bottom: 1px solid var(--border);
+  background: var(--ink-raised);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- drop zone ---------- */
+
+.dropzone {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  border: 2px dashed var(--border);
+  margin: 24px;
+  border-radius: 14px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.dropzone.drag-over {
+  border-color: var(--amber);
+  background: rgba(242, 169, 59, 0.06);
+}
+
+.dropzone-inner {
+  text-align: center;
+  max-width: 420px;
+}
+
+.dropzone h1 {
+  font-size: 19px;
+  margin: 18px 0 8px;
+}
+
+.dropzone p {
+  color: var(--paper-dim);
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+
+button.primary {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background: var(--amber);
+  color: #1a1204;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+button.primary:hover { filter: brightness(1.08); }
+
+/* signature element: a document with a scanning beam sweeping over it */
+
+.scan-icon {
+  position: relative;
+  width: 64px;
+  height: 78px;
+  margin: 0 auto;
+}
+
+.scan-doc {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-raised);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+}
+
+.scan-doc::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 16px;
+  height: 3px;
+  background: var(--border);
+  box-shadow: 0 12px 0 var(--border), 0 24px 0 var(--border), 0 36px 0 var(--border);
+}
+
+.scan-beam {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  height: 3px;
+  background: var(--amber);
+  box-shadow: 0 0 8px 1px var(--amber);
+  animation: sweep 2.2s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0%   { top: 6px; opacity: 0.9; }
+  50%  { top: 68px; opacity: 0.9; }
+  100% { top: 6px; opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-beam { animation: none; top: 36px; }
+}
+
+/* ---------- pages ---------- */
+
+.pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 16px 80px;
+}
+
+.page {
+  position: relative;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.page-inner {
+  position: relative;
+  transform-origin: top left;
+}
+
+.page-inner canvas {
+  display: block;
+}
+
+.page-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 5;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(15, 17, 22, 0.75);
+  color: var(--teal);
+  cursor: pointer;
+}
+.page-badge:hover { outline: 1px solid currentColor; }
+.page.scanning .page-badge { pointer-events: none; cursor: default; }
+.page-badge.ocr { color: var(--amber); }
+.page-badge.err {
+  color: #fff;
+  background: #c0402b;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.page.error .page-inner {
+  outline: 2px solid #c0402b;
+}
+
+.page-number {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  z-index: 5;
+  font-size: 10px;
+  color: rgba(0, 0, 0, 0.4);
+  font-variant-numeric: tabular-nums;
+}
+
+.page.scanning .page-inner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--amber);
+  box-shadow: 0 0 10px 2px var(--amber);
+  animation: page-sweep 1.6s linear infinite;
+}
+
+@keyframes page-sweep {
+  0%   { top: 0%; }
+  100% { top: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page.scanning .page-inner::after { animation: none; }
+}
+
+/* selectable text layer — invisible, sits over the canvas so the rendered page's
+   words can be dragged-selected and copied like normal text. See buildTextLayer()
+   in app.js. */
+
+.text-layer {
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  user-select: text;
+  cursor: text;
+}
+
+.text-layer-word {
+  position: absolute;
+  white-space: pre;
+  transform-origin: 0% 0%;
+}
+
+.text-layer-word::selection {
+  background: rgba(62, 201, 176, 0.35);
+}
+
+/* floating copy button for on-screen text selections */
+
+.copy-selection-btn {
+  position: fixed;
+  z-index: 200;
+  background: var(--ink-raised);
+  color: var(--teal);
+  border: 1px solid var(--teal);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.copy-selection-btn:hover {
+  background: rgba(62, 201, 176, 0.15);
+}
+.copy-selection-btn[hidden] {
+  display: none;
+}
+
+/* highlight overlay */
+
+.hl-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hl {
+  position: absolute;
+  background: var(--hl);
+  border-radius: 2px;
+}
+
+.hl.active {
+  background: var(--hl-active);
+  outline: 1.5px solid #ff6b4a;
+}
+
+/* ---------- settings panel ---------- */
+
+.account-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Setting `display` via a class like the one above silently overrides the
+   browser's own [hidden] { display: none } default — author CSS always wins over
+   user-agent CSS regardless of specificity. Without this rule, the hidden
+   attribute would have no visual effect on this element at all. */
+.account-panel[hidden] {
+  display: none;
+}
+
+.account-panel-inner {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  /* Bounding this to the viewport (instead of letting it grow unbounded) means the
+     panel scrolls internally when content is tall — e.g. many selected languages —
+     rather than overflowing the centered flex box above, which has no way to
+     scroll to content past a certain height once it's taller than the viewport. */
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  background: var(--ink-raised);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.account-panel-inner h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.account-status {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: var(--paper-dim);
+}
+
+.account-close {
+  position: sticky;
+  top: 0;
+  display: block;
+  margin: -4px -4px 4px auto;
+  background: var(--ink-raised);
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px 8px;
+  z-index: 1;
+}
+
+.account-section {
+  margin-top: 16px;
+}
+
+.account-section label {
+  display: block;
+  font-size: 12px;
+  color: var(--paper-dim);
+  margin-bottom: 6px;
+}
+
+.account-row {
+  display: flex;
+  gap: 8px;
+}
+
+.account-row input {
+  flex: 1;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--paper);
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.account-row input:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+/* ---------- language picker ---------- */
+
+#langSearchInput {
+  width: 100%;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--paper);
+  padding: 8px 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+#langSearchInput:focus { outline: none; border-color: var(--teal); }
+
+.lang-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.lang-selected:empty { margin-bottom: 0; }
+
+.lang-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(62, 201, 176, 0.15);
+  border: 1px solid var(--teal);
+  color: var(--teal);
+  border-radius: 999px;
+  padding: 3px 8px 3px 10px;
+  font-size: 12px;
+}
+.lang-chip button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  padding: 0;
+}
+
+.lang-options {
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.lang-option:hover { background: rgba(255, 255, 255, 0.04); }
+.lang-option input { pointer-events: none; }
+.lang-option .lang-code {
+  margin-left: auto;
+  color: var(--paper-dim);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lang-empty {
+  padding: 10px;
+  font-size: 12px;
+  color: var(--paper-dim);
+}
+
+.lang-hint {
+  margin: 8px 0 0;
+  font-size: 11px;
+  color: var(--paper-dim);
+}
+
+.apply-settings-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+}
