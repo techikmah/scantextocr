@@ -1,5 +1,6 @@
 import * as pdfjsLib from "./lib/pdfjs/pdf.min.mjs";
 import Tesseract from "./lib/tesseract/tesseract.esm.min.js";
+import { Document, Paragraph, TextRun, HeadingLevel, Packer } from "./lib/docx/docx.mjs";
 import { hashBuffer, getCachedDoc, saveCachedDoc, getSetting, setSetting } from "./cache.js";
 import { LANGUAGES, DEFAULT_LANGUAGES } from "./languages.js";
 
@@ -841,6 +842,7 @@ exportMenu.addEventListener("click", async (e) => {
 
   if (action === "csv") downloadCsv();
   if (action === "json") downloadJson();
+  if (action === "docx") await downloadDocx();
 });
 
 function pageTextWithLineBreaks(words) {
@@ -897,6 +899,59 @@ function downloadJson() {
     })),
   };
   downloadBlob(JSON.stringify(data, null, 2), `${currentFileName}-scantext.json`, "application/json;charset=utf-8");
+}
+
+// A readable, shareable document rather than raw data — one heading per page,
+// each line of reconstructed text as its own paragraph. Word-level bounding boxes
+// don't belong in a document meant to be read, so those stay JSON-only.
+async function downloadDocx() {
+  const children = [
+    new Paragraph({
+      heading: HeadingLevel.TITLE,
+      children: [new TextRun(currentFileName)],
+    }),
+    new Paragraph({
+      children: [
+        new TextRun({ text: `Exported ${new Date().toLocaleString()} — ScanText`, italics: true, size: 18 }),
+      ],
+    }),
+  ];
+
+  pages.forEach((p, i) => {
+    children.push(
+      new Paragraph({
+        heading: HeadingLevel.HEADING_1,
+        spacing: { before: 300 },
+        children: [
+          new TextRun(`Page ${i + 1}`),
+          new TextRun({ text: `  (${p.source === "ocr" ? "OCR" : "text"})`, italics: true, size: 20 }),
+        ],
+      })
+    );
+
+    const text = pageTextWithLineBreaks(p.words);
+    const lines = text ? text.split("\n") : [""];
+    for (const line of lines) {
+      children.push(new Paragraph({ children: [new TextRun(line)] }));
+    }
+  });
+
+  const doc = new Document({ sections: [{ children }] });
+
+  try {
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${currentFileName}-scantext.docx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("ScanText: docx export failed", err);
+    setStatus("Couldn't build the Word document.", true);
+  }
 }
 
 // ---------- responsive re-fit ----------
